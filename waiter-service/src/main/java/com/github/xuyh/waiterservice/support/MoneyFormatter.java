@@ -15,9 +15,14 @@ public class MoneyFormatter implements Formatter<Money> {
     if (NumberUtils.isParsable(text)) {
       return Money.of(CurrencyUnit.of("CNY"), NumberUtils.createBigDecimal(text));
     } else if (StringUtils.isNotEmpty(text)) {
-
+      String[] split = StringUtils.split(text, " ");
+      if (split != null && split.length == 2 && NumberUtils.isParsable(split[1])) {
+        return Money.of(CurrencyUnit.of(split[0]), NumberUtils.createBigDecimal(split[1]));
+      } else {
+        throw new ParseException(text, 0);
+      }
     }
-    return null;
+    throw new ParseException(text, 0);
   }
 
   @Override
